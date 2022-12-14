@@ -1,9 +1,17 @@
+local ntimes = 0
+local print_orig = print
+local print = function(...)
+	ntimes = ntimes + 1
+end
+
 local expat = require'expat'
 local pp = require'pp'
 
 local callbacks = setmetatable({}, {__index = function(t,k) return function(...) print(k,...) end end})
 expat.parse({path='media/svg/zorro.svg'}, callbacks)
-pp(expat.treeparse{path='media/svg/zorro.svg'})
+
+-- TODO: This is a lot print out
+--pp(expat.treeparse{path='media/svg/zorro.svg'})
 
 
 --[[Test for CVE-2013-0340 vulnerability
@@ -110,3 +118,6 @@ soaptest[[<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 			</ns1:serviceA>
 		</soap:Body>
 	</soap:Envelope>]]
+
+print_orig("While parsing print was executed "..tostring(ntimes).." times")
+
